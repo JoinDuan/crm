@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.TranMapper">
+
+    <!--查询交易列表，带分页带模糊查询-->
+    <select id="selectAllClueAndLike" resultType="com.bjpowernode.crm.workbench.bean.Tran">
+       select tr.id,
+            tu.name as owner,
+            tr.money,
+            tr.name,
+            tr.expectedDate,
+            tc.name as customerId,
+            tr.stage,
+            tr.possibility,
+            tr.type,
+            tr.source,
+            tr.activityId,
+            ct.fullname as contactsId,
+            tr.createBy,
+            tr.createTime,
+            tr.editBy,
+            tr.editTime,
+            tr.description,
+            tr.contactSummary,
+            tr.nextContactTime from tbl_tran tr
+            join tbl_user tu on tr.owner = tu.id
+            join tbl_customer tc on tr.customerId = tc.id
+            join tbl_contacts ct on tr.contactsId = ct.id
+            <where>
+                <if test="owner != null and owner != '' ">
+                    and tu.name like '%' #{owner} '%'
+                </if>
+                <if test="name != null and name != '' ">
+                    and tr.name like '%' #{name} '%'
+                </if>
+                <if test="customerId != null and customerId != '' ">
+                    and tc.name like '%' #{customerId} '%'
+                </if>
+                <if test="stage != null and stage != '' ">
+                    and tr.stage =#{stage}
+                </if>
+                <if test="type != null and type != '' ">
+                    and tr.type =#{type}
+                </if>
+                <if test="source != null and source != '' ">
+                    and tr.source =#{source}
+                </if>
+                <if test="contactsId != null and contactsId != '' ">
+                    and ct.fullname like '%' #{contactsId} '%'
+                </if>
+            </where>
+
+    </select>
+
+    <delete id="deleteTranByIds">
+        delete from tbl_tran where id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectOneClueById" resultType="com.bjpowernode.crm.workbench.bean.Tran">
+        select tr.id,
+            tu.name as owner,
+            tr.money,
+            tr.name,
+            tr.expectedDate,
+            tc.name as customerId,
+            tr.stage,
+            tr.possibility,
+            tr.type,
+            tr.source,
+            ta.name as activityId,
+            ct.fullname as contactsId,
+            tr.createBy,
+            tr.createTime,
+            tr.editBy,
+            tr.editTime,
+            tr.description,
+            tr.contactSummary,
+            tr.nextContactTime from tbl_tran tr
+            join tbl_user tu on tr.owner = tu.id
+            join tbl_customer tc on tr.customerId = tc.id
+            join tbl_contacts ct on tr.contactsId = ct.id
+            join tbl_activity ta on tr.activityId = ta.id
+            where  tr.id =#{id};
+    </select>
+
+    <select id="selectTranByContactsId" resultType="com.bjpowernode.crm.workbench.bean.Tran">
+        select tt.id,
+            tt.owner,
+            tt.money,
+            tt.name,
+            tt.expectedDate,
+            tt.customerId,
+            tt.stage,
+            tt.possibility,
+            tt.type,
+            tt.source,
+            tt.activityId,
+            tt.contactsId,
+            tt.createBy,
+            tt.createTime,
+            tt.editBy,
+            tt.editTime,
+            tt.description,
+            tt.contactSummary,
+            tt.nextContactTime from tbl_tran tt where tt.contactsId =#{id}
+
+    </select>
+
+    <select id="selectTranByCustomerId" resultType="com.bjpowernode.crm.workbench.bean.Tran">
+        select tt.id,
+            tt.owner,
+            tt.money,
+            tt.name,
+            tt.expectedDate,
+            tt.customerId,
+            tt.stage,
+            tt.possibility,
+            tt.type,
+            tt.source,
+            tt.activityId,
+            tt.contactsId,
+            tt.createBy,
+            tt.createTime,
+            tt.editBy,
+            tt.editTime,
+            tt.description,
+            tt.contactSummary,
+            tt.nextContactTime from tbl_tran tt where tt.customerId =#{id}
+    </select>
+</mapper>
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.CustomerMapper">
+    <!--        limit #{page},#{pageSize};
+    -->
+    <select id="selectAllCustomerAndLike" resultType="com.bjpowernode.crm.workbench.bean.Customer">
+       select tc.id,tu.name as owner,tc.name,tc.website,tc.phone,tc.createBy,tc.createTime,tc.editBy,tc.editTime,tc.contactSummary,tc.nextContactTime,tc.description,tc.address
+       from tbl_customer tc
+       left join
+       tbl_user tu on tc.owner = tu.id
+       <where>
+           <if test="customer.name != null and customer.name != '' ">
+               and tc.name like '%' #{customer.name} '%'
+           </if>
+           <if test="customer.owner != null and customer.owner != '' ">
+               and tu.name like '%' #{customer.owner} '%'
+           </if>
+           <if test="customer.phone != null and customer.phone != '' ">
+               and tc.phone like '%' #{customer.phone} '%'
+           </if>
+           <if test="customer.website != null and customer.website != '' ">
+               and tc.website like '%' #{customer.website} '%'
+           </if>
+       </where>
+
+    </select>
+
+    <select id="selectCustomerById" resultType="com.bjpowernode.crm.workbench.bean.Customer">
+        select id,owner,name,website,phone,createBy,createTime,editBy,editTime,contactSummary,nextContactTime,description,address
+        from tbl_customer where id=#{id};
+    </select>
+
+    <select id="selectAllCustomerLikeName" resultType="com.bjpowernode.crm.workbench.bean.Customer">
+        select tc.id,tu.name as owner,tc.name,tc.website,tc.phone,tc.createBy,tc.createTime,tc.editBy,tc.editTime,tc.contactSummary,tc.nextContactTime,tc.description,tc.address
+        from tbl_customer tc
+        left join
+        tbl_user tu
+        on tc.owner = tu.id
+        <where>
+            <if test="customerName != null and customerName != '' ">
+                and tc.name like '%' #{customerName} '%'
+            </if>
+        </where>
+    </select>
+    <select id="selectCustomerByName" resultType="com.bjpowernode.crm.workbench.bean.Customer">
+        select tc.* from tbl_customer tc where tc.name = #{contactsName};
+
+    </select>
+</mapper>
+

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.ContactsMapper">
+
+    <select id="selectAllContactsAndLike" resultType="com.bjpowernode.crm.workbench.bean.Contacts">
+        select
+            tc1.id,
+            tu.name as owner,
+            tc1.source,
+            tc2.name as customerId,
+            tc1.fullname,
+            tc1.appellation,
+            tc1.email,
+            tc1.mphone,
+            tc1.job,
+            tc1.birth,
+            tc1.createBy,
+            tc1.createTime,
+            tc1.editBy,
+            tc1.editTime,
+            tc1.description,
+            tc1.contactSummary,
+            tc1.nextContactTime,
+            tc1.address
+            from tbl_contacts tc1 left join tbl_user tu
+            on tc1.owner = tu.id
+            left join tbl_customer tc2
+            on tc1.customerId = tc2.id
+            <where>
+                <if test="owner != null and owner != '' ">
+                    and tu.name like '%' #{owner} '%'
+                </if>
+                <if test="fullname != null and fullname != '' ">
+                    and tc1.fullname like '%' #{fullname} '%'
+                </if>
+                <if test="customerId != null and customerId != '' ">
+                    and tc2.name like '%' #{customerId} '%'
+                </if>
+                <if test="source != null and source != '' ">
+                    and tc1.source like '%' #{source} '%'
+                </if>
+                <if test="birth != null and birth != '' ">
+                    and tc1.birth like '%' #{birth} '%'
+                </if>
+            </where>
+
+    </select>
+
+    <select id="selectContactsByCustomerId" resultType="com.bjpowernode.crm.workbench.bean.Contacts">
+        select id
+            ,owner
+            ,source
+            ,customerId
+            ,fullname
+            ,appellation
+            ,email
+            ,mphone
+            ,job
+            ,birth
+            ,createBy
+            ,createTime
+            ,editBy
+            ,editTime
+            ,description
+            ,contactSummary
+            ,nextContactTime
+            ,address from tbl_contacts where customerId=#{id}
+
+    </select>
+
+    <select id="selectLikeName" resultType="com.bjpowernode.crm.workbench.bean.Contacts">
+        select tc.* from tbl_contacts tc
+        <where>
+            <if test="name != null and name != ''">
+                and tc.fullname like '%' #{name} '%'
+            </if>
+        </where>
+    </select>
+    <select id="selectByName" resultType="com.bjpowernode.crm.workbench.bean.Contacts">
+        select tc.* from tbl_contacts tc
+        <where>
+            <if test="name != null and name != ''">
+                and tc.fullname =#{contactsName};
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOneContactsById" resultType="com.bjpowernode.crm.workbench.bean.Contacts">
+        select
+        tc1.id,
+        tu.name as owner,
+        tc1.source,
+        tc2.name as customerId,
+        tc1.fullname,
+        tc1.appellation,
+        tc1.email,
+        tc1.mphone,
+        tc1.job,
+        tc1.birth,
+        tc1.createBy,
+        tc1.createTime,
+        tc1.editBy,
+        tc1.editTime,
+        tc1.description,
+        tc1.contactSummary,
+        tc1.nextContactTime,
+        tc1.address
+        from tbl_contacts tc1 left join tbl_user tu
+        on tc1.owner = tu.id
+        left join tbl_customer tc2
+        on tc1.customerId = tc2.id
+        where tc1.id =#{id}
+    </select>
+
+    <select id="selectContactsAllName" resultType="com.bjpowernode.crm.workbench.bean.Customer">
+        select tc.* from tbl_customer tc
+        <where>
+            <if test="contactsName != null and contactsName != '' ">
+                and tc.name like '%' #{contactsName} '%'
+            </if>
+        </where>
+    </select>
+
+</mapper>
+

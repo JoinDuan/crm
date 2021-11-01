@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.ClueActivityRemarkMapper">
+
+    <delete id="deleteClueRelationActivity">
+        delete from tbl_clue_activity_relation where clueId=#{clueId} and activityId=#{activityId};
+    </delete>
+
+    <select id="selectActivityIdByClueId" resultType="com.bjpowernode.crm.workbench.bean.ClueActivityRemark">
+        select * from tbl_clue_activity_relation where clueId=#{id};
+    </select>
+
+    <delete id="deleteClueRelationActivityByClueId">
+        delete from tbl_clue_activity_relation where clueId=#{id};
+    </delete>
+</mapper>
+

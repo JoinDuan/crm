@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.ActivityRemarkMapper">
+
+    <select id="selectOneByActivityId" resultType="com.bjpowernode.crm.workbench.bean.ActivityRemark">
+        select t.id,t.noteContent,t.createTime,t.createBy,t.editTime,t.editBy,t.editFlag,t.activityId,t.owner from tbl_activity_remark t where t.activityId=#{id};
+    </select>
+
+    <delete id="deleteRemarkById">
+        delete from tbl_activity_remark where id=#{id};
+    </delete>
+</mapper>
+

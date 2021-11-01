@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.CustomerRemarkMapper">
+    <select id="selectByCustomerKey" resultType="com.bjpowernode.crm.workbench.bean.CustomerRemark">
+        select id,noteContent,createBy,createTime,editBy,editTime,editFlag,customerId from tbl_customer_remark where customerId=#{id};
+    </select>
+
+    <insert id="insertCustomerRemark">
+        insert into tbl_customer_remark(id,noteContent,createBy,createTime,customerId)
+        values(#{id},#{noteContent},#{createBy},#{createTime},#{customerId});
+    </insert>
+
+    <delete id="deleteRemarkById">
+        delete from tbl_customer_remark where id=#{id};
+    </delete>
+</mapper>
+

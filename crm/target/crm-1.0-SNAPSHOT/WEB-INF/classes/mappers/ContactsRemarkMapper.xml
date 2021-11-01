@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.ContactsRemarkMapper">
+
+    <select id="selectRemarkByContactsId" resultType="com.bjpowernode.crm.workbench.bean.ContactsRemark">
+       select tcr.id,
+                tcr.noteContent,
+                tcr.createBy,
+                tcr.createTime,
+                tcr.editBy,
+                tcr.editTime,
+                tu.img as editFlag,
+                tcr.contactsId
+                from tbl_contacts_remark tcr join tbl_user tu
+                on tcr.createBy = tu.name
+                where tcr.contactsId =#{id}
+    </select>
+</mapper>
+

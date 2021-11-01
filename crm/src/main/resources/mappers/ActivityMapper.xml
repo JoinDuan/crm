@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.mapper.ActivityMapper">
+
+
+    <delete id="deleteById">
+        delete from tbl_activity where id= #{id};
+    </delete>
+
+
+    <insert id="insertActivity">
+       insert into tbl_activity(id,
+                                owner,
+                                name,
+                                startDate,
+                                endDate,
+                                cost,
+                                description,
+                                createTime,
+                                createBy) values(
+
+                                #{id},
+                                #{owner},
+                                #{name},
+                                #{startDate},
+                                #{endDate},
+                                #{cost},
+                                #{description},
+                                #{createTime},
+                                #{createBy});
+    </insert>
+
+    <select id="queryActivityById" resultType="com.bjpowernode.crm.workbench.bean.Activity">
+        select id,owner,name,startDate,endDate,cost,description,createTime,createBy,editTime,editBy from tbl_activity where id=#{id};
+    </select>
+
+    <select id="selectActivityAndLikeByOwner" resultType="com.bjpowernode.crm.workbench.bean.Activity">
+        select id,owner,`name`,startDate,endDate,cost,description,createTime,createBy,editTime,editBy from tbl_activity
+        <where>
+            <if test="activity.name != null and activity.name != ''">
+                and `name` like %#{activity.name}%
+            </if>
+            <if test="activity.startDate != null and activity.startDate != '' ">
+                and startDate &gt;= #{activity.startDate}
+            </if>
+            <if test="activity.endDate != null and activity.endDate != '' ">
+                and endDate &lt;= #{activity.endDate}
+            </if>
+            and id
+            <if test="userIdList != null and userIdList != '' ">
+                and owner in
+                <foreach collection="list" item="owner" open="(" close=")" separator=",">
+                    #{owner}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectActivityWhereIdNotIn" resultType="com.bjpowernode.crm.workbench.bean.Activity">
+        select ta.id,tu.name as owner,ta.name,ta.startDate,ta.endDate,ta.cost,ta.description,ta.createTime,ta.createBy,ta.editTime,ta.editBy
+        from tbl_activity ta join tbl_user tu on ta.owner = tu.id
+        where ta.id not in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="name != null and name != '' ">
+            and ta.name like '%' #{name} '%'
+        </if>
+    </select>
+
+    <select id="selectLikeName" resultType="com.bjpowernode.crm.workbench.bean.Activity">
+        select ta.id,tu.name as owner,ta.name,ta.startDate,ta.endDate,ta.cost,ta.description,ta.createTime,ta.createBy,ta.editTime,ta.editBy
+        from tbl_activity ta join tbl_user tu on ta.owner = tu.id
+        <where>
+            <if test="name != null and name != '' ">
+                and ta.name like '%' #{name} '%';
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByName" resultType="com.bjpowernode.crm.workbench.bean.Activity">
+        select ta.id,tu.name as owner,ta.name,ta.startDate,ta.endDate,ta.cost,ta.description,ta.createTime,ta.createBy,ta.editTime,ta.editBy
+        from tbl_activity ta join tbl_user tu on ta.owner = tu.id
+        <where>
+            <if test="name != null and name != '' ">
+                and ta.name = #{name};
+            </if>
+        </where>
+    </select>
+
+    <select id="selectContactsActivityWhereIdIn" resultType="com.bjpowernode.crm.workbench.bean.Activity">
+
+        select ta.id,tu.name as owner,
+        ta.name,ta.startDate,ta.endDate,ta.cost,ta.description,ta.createTime,ta.createBy,ta.editTime,ta.editBy
+        from tbl_activity ta join tbl_user tu on ta.owner = tu.id
+        where ta.id in (select activityId from tbl_contacts_activity_relation where contactsId =#{id})
+
+    </select>
+
+    <!--根据联系人id，市场活动吗名字，模糊查询市场活动，排除掉已经关联的-->
+    <select id="selectContactsActivityIdNotInAndNameLike" resultType="com.bjpowernode.crm.workbench.bean.Activity">
+        select ta.id,tu.name as owner,
+        ta.name,ta.startDate,ta.endDate,ta.cost,ta.description,ta.createTime,ta.createBy,ta.editTime,ta.editBy
+        from tbl_activity ta
+        join tbl_user tu
+        on
+        ta.owner = tu.id
+        where ta.id not in (select activityId from tbl_contacts_activity_relation where contactsId =#{contactsId})
+        <if test="activityName != null and activityName != '' ">
+            and ta.name like '%' #{activityName} '%'
+        </if>
+    </select>
+
+</mapper>
+
